@@ -269,4 +269,67 @@ Pode colocar quantos middlewares forem necessários. Ele irá executar em ordem,
 
 ### Aplicabilidade do middleware
 
-    
+Autenticação, Verificação de Dados, GErar Logs etc
+
+
+## ReactJS
+
+Biblioteca para Construção de Interfaces. o React usamos para Web, Mobile, Realidade Virtual etc. É usado na construção de SPA (Single-Page Application), que é uma forma de consumir aplicações no front-end.
+Antigamente, para cada rota, o backend retornava um html, agora o backend retorna apenas o JSON e o front-end faz o resto.
+A página não recarrega, ela executa em tempo real.
+
+O React é um framework, embora o ecossistema (Mobile, Web etc) seja gigante, é um conjunto de ferramentas que facilita o desenvolvimento da interface.
+
+Em React tudo fica dentro do JavaScript, seja CSS ou HTML
+
+### React, ReactJS e ReactNative
+
+React:
+
+Biblioteca de construção de interfaces e componentização. É usada tanto no reactJS quanto no ReactNative
+
+ReactJS:
+
+Comportamento do React diretamente no browser. Que une a lib React com a ReactDOM (do facebook).
+
+React Native:
+
+Lib React com a lib que lida com elementos nativos, é usado pra mobile.
+
+
+Mesmo usando tudo no JavaScript. O Babel transforma toda a mistura em CSS, JavaScript e HTML separados.
+
+#### Vantagens:
+
+- Organização do código
+
+**Componentização**
+
+Didivir partes do código onde sozinhos tem funcionalidades específicas. A divisão é feita de acordo com o isolamento de um componente sem que ele interfira na aplicação como um todo.
+
+- Divisão de responsabilidades
+
+**BackEnd: Regra de negócio**
+
+**FrontEnd: Interface**
+
+FrontEnd não tem responsabilidade em regra de negócio.
+
+- Uma API para múltiplos clientes:
+
+**Com apenas uma API podemos estruturar com o frontEnd uma aplicação Mobile e Web. Dois clientes com a mesma API**
+
+- Programação declarativa
+
+
+
+#### JSX
+
+JavaScript + XML no mesmo arquivo. E com o React criamos nossas próprias tags em HTML. Assim podemos usar Tags dentro do javascript sem problemas.
+
+
+## OBS
+
+- **O browser não entende o código, pois as 3 linguagens juntas o bowser não é preparado**
+- **O Babel converte o código JS em um arquivo legível ao browser**
+- **Live Reaload com Webpack Dev Server. Independente da quantidade de arquivos, o Webpack cria um único arquivo dos arquivos que o Babel criou**
