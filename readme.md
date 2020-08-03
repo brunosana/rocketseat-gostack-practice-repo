@@ -211,6 +211,62 @@ app.post('/projects', (request, response) => {
 
 O navegador nativamente não faz requisições do tipo PUT, PATCH, POST e DELETE. Para isso, facilitamos o desenvolvimento com o software *insomnia*.
 
-### Criando a primeira API (com DB_fake)
+### Criando a primeira API
 
-z
+Antes de mais nada, para tratar cada objeto como único, precisamos de uma chave única, e para aumentar a performance nessa criação usaremos a biblioteca *uuidv4*:
+
+```
+yarn add uuidv4
+```
+
+**O código responsável por esse tópico estará no arquivo src/index no corpo do commit**
+
+## Middleware
+
+O que é middleware?
+
+Funciona como um interceptador de requisições, que pode:
+- Interromper a requisição
+- Alterar dados da requisição
+
+Todas as rotas são consideradas middlewares, pois cumprem os requisitos acima (interrompe e altera dados da requisição).
+O middleware captura os mesmos dados que uma rota convencional.
+
+É usado quando queremos que seja disparado de forma automática. Pode ser em todas ou em pré selecionadas. Um middleware recebe além do request e response, o parâmetro *next*. É nesse parâmetro que sabemos qual será a próxima função a ser chamada.
+
+Ex: Toda vez que uma requisição for feita, uma mensagem informando qual requisição foi irá ser impressa no terminal.
+
+Para isso, criamos um middleware logRequests:
+
+```javascript
+function logRequests(request, response, next){
+    const { method, url } = request;
+    const label = `[${method.toUpperCase()}] - ${url}`;
+    console.log(label);
+    next();
+}
+
+//A linha a seguir garante que em TODA requisição, o logRequests será executado.
+app.use(logRequests);
+```
+
+Porém, como é um interceptador, ele interrompeu totalmente a requisição e precisa ser informado que é para prosseguir para a próxima função, para isso, usamos o parâmetro declarado *next*. Caso não seja chamado, a rota não será disparada.
+
+**OBS: NodeJS é uma aplicação linear, então a função que ele encontrar primeiro será executada, portanto, as funções a serem executadas primeiro precisam ser declaradas antes**
+
+Para usar um ou mais middlewares em uma rota específica, incluímos antes da arrow function com o request e response:
+
+```javascript
+app.post('/projects', logRequests, Middleware2, Mid3 (request, response) => {
+    const {name, desc} = request.body;
+    const project = {id: uuid(), name, desc};
+    projects.push(project);
+    return response.json(project);
+});
+```
+
+Pode colocar quantos middlewares forem necessários. Ele irá executar em ordem, conforme for declarado primeiro.
+
+### Aplicabilidade do middleware
+
+    
