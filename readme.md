@@ -80,17 +80,17 @@ Tipos de códigos:
 
 - 1XX : Informational
 - 2XX : Success
-...200 : Success
-...201 : Created
+⋅⋅* 200 : Success
+⋅⋅* 201 : Created
 - 3XX : Redirection
-...301 : Moved Permanently
-...302 : Moved
+⋅⋅* 301 : Moved Permanently
+⋅⋅* 302 : Moved
 - 4XX : Client Error
-...400 : Bad Request
-...401 : Unauthorized
-...404 : Not Found
+⋅⋅* 400 : Bad Request
+⋅⋅* 401 : Unauthorized
+⋅⋅* 404 : Not Found
 - 5XX : Server Error
-...500 : Internal Server Error
+⋅⋅* 500 : Internal Server Error
 
 
 ### Começando no NodeJS
@@ -211,3 +211,6 @@ app.post('/projects', (request, response) => {
 
 O navegador nativamente não faz requisições do tipo PUT, PATCH, POST e DELETE. Para isso, facilitamos o desenvolvimento com o software *insomnia*.
 
+### Criando a primeira API (com DB_fake)
+
+z
