@@ -406,7 +406,7 @@ const area = (base, altura) => {
 **Código convertido: (public/bundle.js)**
 
 ```javascript
-const area = (base, altura) => {
+const area = function(base, altura){
   return base * altura;
 };
 ```
@@ -456,3 +456,57 @@ module.exports = {
 ```
 
 Agora, executando o servidor com `yarn webpack-dev-server --mode development` e podemos ver o servidor com live reloading.
+
+## Componentização
+
+Como o primeiro arquivo react, no index.js na pasta src, importamos o *React* do **react** e a função *render* fo **react-dom**.
+
+A estrutura do arquivo ficará assim:
+
+```javascript
+import React from 'react';
+import { render } from 'react-dom';
+render(<h1>Hello World</h1>, document.getElementById('app'));
+```
+Com o método *render* podemos enviar código html diretamente para uma DIV, no caso, a *div#app* criada no index.html, e já é possível observar no servidor.
+
+**Para criar o primeiro componente, criamos o arquivo *App.js* (Todo componente inicia com letra maiúscula).**
+
+Dentro de todo componente React, precisamos importar o mesmo, então usamos o `import React from 'react';`.
+
+Agora criamos a função *app* que contém apenas um `return <h1>Hello App</h1>;` e no final do arquivo, exportamos a função com `export default App;`.
+
+Já no *index.js*, podemos importar o componente usando `import App from './App'` (já que está na mesma pasta podemos usar assim). Com o componente importado, podemos usá-lo como uma Tag, dessa forma:
+
+```javascript
+import App from './App';
+render(<App />, document.getElementById('app'));
+```
+
+Convencionalmente criamos todos os componentes na pasta *src/components*.
+
+**FRAGMENT**
+
+**OBS: o método return aceita apenas uma tag como retorno (no caso de mais de uma, normalmente usamos uma <div> para exportar). Para evitar código longo desncessário (como todo componente precisar ser exportado como uma div sempre que tiver mais de uma tag) usamos o conceito de FRAGMENT, onde ao invés de uma tag *div* criamos uma tag vazia (<>CONTENT</>).**
+
+## Propriedades
+
+Qualquer informação passada de um componente pai para componente filho.
+
+Ex: Um Header com títulos diferentes.
+
+- Criamos um componente *Head* em *Components/Head.js* e ele renderiza um <h2> com um valor personalizado.
+- Passamos um atributo na *TAG* do Head (Ex: <Head title="HomeSana" />)
+- No componente *HEAD* inserimos o parâmetro *props* na função (ele é quem irá receber as propriedades e tornar possível usá-las). É possível fazer desestruturação também.
+- Para usar a propriedade passada no HTML, usamos as chaves **{}** para inserir javascript no html.
+
+Também é possível inserir HTML dentro das tags personalizadas, Ex:
+
+```html
+<Head title="Ola">
+    <div>
+        Ola Mundo
+    </div>
+</Head>
+```
+Para capturar o corpo da tag, **dentro do parâmetro props contém o parâmetro *children*, que pode ser acessado de dentro do component**.
