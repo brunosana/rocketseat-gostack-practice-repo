@@ -12,12 +12,10 @@ function App(){
     useEffect(() => {
         api.get('/users').then(response => {
             setUsers(response.data);
-            console.log(response.data)
         })
     }, []);
 
     async function handleAddUser(){
-        //setUsers([...users, `User ${Date.now()}`]);
         const response = await
                         api.post('/users', {
                             login: `newuser${Date.now()}`,
