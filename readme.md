@@ -639,7 +639,7 @@ import backgroundImage from './assets/background.jpg';
 ```
 
 
-# Consumir uma API REST com React
+# Consumir uma API REST com React + Axios
 
 Para consumir uma API com react precisamos instalar o **axios**, responsável por conectar o frontend com o backend: `yarn add axios`.
 
@@ -735,4 +735,42 @@ function App(){
 export default App;
 ```
 
+# Inserindo dados em uma API REST com React + Axios
 
+Na função do click do botão (handleAddUser) e inserimos uma requisição do tipo post:
+
+```javascript
+api.post('/users', {
+    login: `newuser${Date.now()}`,
+    password: "passsss",
+    profile: "profile.jpg"
+})
+```
+
+O trecho *${Date.now()}* serve para destinguir as requisições para evitar que a "chave principal" seja igual.
+
+Para que o site atualize, usamos o user que retorna da requisição POST e adicionamos no array. Para isso, a função *handleAddUser* precisa ser assíncrona, e a *response* que irá ser retornada precisa conter o *await*.
+
+```javascript
+const response = await
+                api.post('/users', {
+                    login: `newuser${Date.now()}`,
+                    password: "passsss",
+                    profile: "profile.jpg"
+                });
+setUsers([...users, response.data])
+```
+
+Porém com isso temos um problema, o *@babel/preset-env* não entende requisições assíncronas, com isso, precisamos adicionar outro plugin.
+
+Para isso instalamos o *@babel/plugin-transform-runtime* como dependência de desenvolvimento com a linha `yarn add @babel/plugin-transform-runtime -D`.
+
+Precisamos adicionar esse plugin no nosso arquivo *babel.config.json*, para ser incorporado à nossa aplicação, então, após os presets, adicionamos um campo *plugins*:
+
+```javascript
+plugins:[
+    '@babel/plugin-transform-runtime'
+]
+```
+
+Podemos executar normalmente nossa aplicação que irá funcionar.

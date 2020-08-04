@@ -16,9 +16,15 @@ function App(){
         })
     }, []);
 
-    function handleAddProject(){
-        setUsers([...users, `User ${Date.now()}`]);
-        console.log(users);
+    async function handleAddUser(){
+        //setUsers([...users, `User ${Date.now()}`]);
+        const response = await
+                        api.post('/users', {
+                            login: `newuser${Date.now()}`,
+                            password: "passsss",
+                            profile: "profile.jpg"
+                        });
+        setUsers([...users, response.data])
     }
     return(
         <>
@@ -26,7 +32,7 @@ function App(){
         <ul>
             {users.map(u => <li key={u.id}>{u.login} | {u.password} | {u.profile}</li>)}
         </ul>
-        <button type="button" onClick={handleAddProject} >Add Projeto</button>
+        <button type="button" onClick={handleAddUser} >Add Projeto</button>
         </>
     );
 }
