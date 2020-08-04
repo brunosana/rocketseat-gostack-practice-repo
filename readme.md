@@ -78,20 +78,19 @@ Toda resposta retornada para o frontEnd vem junto com o HTTP code, que informa o
 
 Tipos de códigos:
 
-- 1XX : Informational
-- 2XX : Success
-⋅⋅* 200 : Success
-⋅⋅* 201 : Created
-- 3XX : Redirection
-⋅⋅* 301 : Moved Permanently
-⋅⋅* 302 : Moved
-- 4XX : Client Error
-⋅⋅* 400 : Bad Request
-⋅⋅* 401 : Unauthorized
-⋅⋅* 404 : Not Found
-- 5XX : Server Error
-⋅⋅* 500 : Internal Server Error
-
+* 1XX : Informational
+* 2XX : Success
+  * 200 : Success
+  * 201 : Created
+* 3XX : Redirection
+  * 301 : Moved Permanently
+  * 302 : Moved
+* 4XX : Client Error
+  * 400 : Bad Request
+  * 401 : Unauthorized
+  * 404 : Not Found
+* 5XX : Server Error
+  * 500 : Internal Server Error
 
 ### Começando no NodeJS
 
@@ -333,3 +332,127 @@ JavaScript + XML no mesmo arquivo. E com o React criamos nossas próprias tags e
 - **O browser não entende o código, pois as 3 linguagens juntas o bowser não é preparado**
 - **O Babel converte o código JS em um arquivo legível ao browser**
 - **Live Reaload com Webpack Dev Server. Independente da quantidade de arquivos, o Webpack cria um único arquivo dos arquivos que o Babel criou**
+
+---
+
+## Estrutura de um projeto React
+
+Criando do zero, primeiro usamos os comandos `yarn init -y` para iniciar e `yarn add react react-dom`. O diretório principal com duas pastas, a *src* e *public*. Lá em cima já vimos que o react com o react-dom (framework para manipular elementos da página) é para trabalharmos com web.
+
+### Código legível ao browser
+
+
+Para que o código react consiga ser interpretado pelo browser, criamos um arquivo *index.html* na pasta *public*. O código deverá conter uma div com o id app:
+
+```html
+<div id="app"></div>
+```
+
+Usamos o Babel para converter o código do React para que o browser consiga entender. E junto com o *Babel* usamos o *Webpack*
+
+- Babel: Transpila (converte) o código
+- Webpack: Para cada tipo de arquivo ele converte o código de uma determinada maneira. Existe uma forma ainda de importar imagens, html, css no react, então para conseguirmos converter essas importações usamos *loaders*
+- Loaders: babel-loader, css-loader, image-loader, file-loader etc.
+
+Então primeiro adicionamos os pacotes:
+
+- @babel/code: `yarn add @babel/core`
+- @babel/preset-env: `yarn add @babel/perset-env`
+- @babel/preset-react: `yarn add @babel/preset-react`
+- webpack: `yarn add webpack`
+- webpack-cli: `yarn add webpack-cli`
+
+É possível instalar todos eles com apenas uma linha usando `yarn add @babel/core @babel/preset-env @babel/preset-react webpack webpack-cli`.
+
+Agora precisamos criar na raiz do projeto o arquivo **babel.config.js**, é com ele que informamos as configurações que conversão entre react e um formato legível ao browser.
+
+Por hora usamos a configuração *presets* que são configurações criadas por terceiros, que são os que instalamos, o `@babel/preset-env` e `@babel/preset-react`:
+
+```javascript
+module.exports = {
+    presets: [
+        '@babel/preset-env',
+        '@babel/preset-react'
+    ]
+};
+```
+- @babel/preset-env: pega todos os arquivos javascript do projeto e converte em um JS mais antigo, com funções que podem ser executadas no browser, pode converter para o node, que já roda no navegador e torna possível a execução do site. Ele entende o ambiente da aplicação que está sendo executada e faz a conversão de acordo com ela.
+
+- @babel/preset-react: adiciona as funcionalidades do react na conversão. É esse preset que consegue ler os arquivos react e faz a conversão.
+
+Ex:
+Um código com *arrow function* não é interpretado pelo navegador, pois ele não reconhece. Então na pasta *src* criamos o arquivo **index.js** com uma arrow function para calcular a área de um retângulo.
+
+Para conseguir acessar o babel por linha de comando, adicionamos o package *@babel/cli* pela linha `yarn add @babel/cli`.
+
+Podemos usar então a conversão:
+
+```
+yarn babel src/index.js --out-file public.bundle.js
+```
+
+o primeiro parâmetro é o arquivo, e a flag `--out-file` é pra explicitar onde o arquivo final irá ser gerado.
+
+Então a conversão funciona assim:
+
+**Código não convertido: (src/index.js)**
+
+```javascript
+const area = (base, altura) => {
+    return base*altura;
+}
+```
+
+**Código convertido: (public/bundle.js)**
+
+```javascript
+const area = (base, altura) => {
+  return base * altura;
+};
+```
+
+Assim conseguimos importar o script *bundle.js* no *index.html* e ele executará normalmente.
+
+Para **configurar o webpack** criamos na raiz do projeto o arquivo *webpack.config.js*. O Babel converte o javascript, mas para importações de imagens, html, e outros arquivos usamos o webpack.
+
+Com uma estrutura bem semelhante, usamos dentro do `module.exports = {}` o parâmetro **entry** para adicionar o arquivo de entrada, que seria o **src/index.js**. Usamos o módulo *path* para garantir que em todos os sistemas operacionais sejam funcionais a aplicação. O próximo é o parâmetro **output**, que será o arquivo convertido, que no caso será o **bundle.js**.
+
+O próximo parâmetro é o **module** onde dentro dele definiremos um vetor **rules**. Cara *rule* será um *loader*.
+
+Para isso iremos instalar então o *babel-loader* usando `yarn add babel-loader`.
+
+Dentro da rule, temos os parâmetros **test**, **exclude**, **use** e dentro do use temos o **loader**. Basicamente, toda vez que um arquivo javascript for necessário e ele não estiver na pasta node_modules, o babel irá converter.
+
+Para testar, usamos o comando `yarn webpack --mode development` no terminal e conseguimos ver o arquivo *bundle.js* convertido, com vários arquivos.
+
+E agora para continuarmos o desenvolvimento, usamos o webpack-dev-server para conseguir monitorar as mudanças que fazemos no código, usando `yarn add webpack-dev-server -D`.
+
+Com o pacote instalado, adicionamos antes do module a propriedade **devServer: {}**, com a propriedade *contentBase*, o arquivo ficará:
+
+```javascript
+const path = require('path');
+
+module.exports = {
+    entry: path.resolve(__dirname, 'src', 'index.js'),
+    output: {
+        path: path.resolve(__dirname, 'public'),
+        filename: 'bundle.js'
+    },
+    devServer: {
+        contentBase: path.resolve(__dirname, 'public')
+    },
+    module: {
+        rules: [
+            {
+                test: /\.js$/,
+                exclude: /node_modules/,
+                use: {
+                    loader: 'babel-loader'
+                }
+            }
+        ]
+    }
+};
+```
+
+Agora, executando o servidor com `yarn webpack-dev-server --mode development` e podemos ver o servidor com live reloading.
