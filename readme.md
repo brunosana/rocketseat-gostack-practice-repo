@@ -589,3 +589,51 @@ Então, para recriar o projeto passamos o novo array com o *spread operator*:
 setProjects([...projects, `Projeto ${Date.now()}`]);
 ```
 **A variável projects não é alterada, é feita a recriação do array, com os valores que já estão nele e o novo elemento.**
+
+## Importar CSS e Imagens
+
+Como dito anteriormente, trabalhando com outros arquivos, precisaremos de outros *loaders*. Então iremos adicionar uma nova *rule* no *webpack.config.js*. Porém, antes, instalamos já os loaders necessários:
+
+- style-loader: `yarn add style-loader`
+- css-loader `yarn add css-loader`
+
+Podemos fazer com apenas uma linha usando `yarn add style-loader css-loader`.
+
+A nova rule ficará:
+
+```javascript
+{
+    test: /\.css$/,
+    exclude: /node_modules/,
+    use: [
+        {loader: 'style-loader'},
+        {loader: 'css-loader'}
+    ]
+}
+```
+Cada loader tem a sua função:
+
+- css-loader faz a verificação das importações dentro do css (às vezes imagens, outros arquivos etc) e retorna pro webpack
+- pega o css interpretado pelo css-loader e injeta isso no html
+
+Para importarmos arquivos na nossa aplicação, precisamos do **file-loader** usando `yarn add file-loader`.
+
+Instalado o file-loader, inserimos uma nova rule:
+
+```javascript
+{
+    test: /.*\.(gif|png|jpe?g)$/i,
+    use: {loader: 'file-loader'}
+}
+```
+
+Observe que não usamos o parâmetro *exclude*, pois não teremos imagens na pasta node_modules.
+
+Importando e usando a imagem:
+
+```javascript
+import backgroundImage from './assets/background.jpg';
+
+//function app ....
+<img width={200} src={backgroundImage} />
+```
