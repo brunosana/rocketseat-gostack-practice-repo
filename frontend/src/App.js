@@ -1,23 +1,30 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import api from './services/api';
 
 import './App.css';
-import backgroundImage from './assets/background.jpg';
 
 import Head from './components/Head';
 
 function App(){
-    const [projects, setProjects] = useState(['DoneList', 'SteamStoreBR']);
+    const [users, setUsers] = useState([]);
+
+    //Par1 - Qual função disparar | Par2 - QUando disparar
+    useEffect(() => {
+        api.get('/users').then(response => {
+            setUsers(response.data);
+            console.log(response.data)
+        })
+    }, []);
 
     function handleAddProject(){
-        setProjects([...projects, `Projeto ${Date.now()}`]);
-        console.log(projects);
+        setUsers([...users, `User ${Date.now()}`]);
+        console.log(users);
     }
     return(
         <>
-        <Head title="HomeSana"/>
-        <img width={500} src={backgroundImage} />
+        <Head title="HomeSana Projects"/>
         <ul>
-            {projects.map(project => <li key={project}>{project}</li>)}
+            {users.map(u => <li key={u.id}>{u.login} | {u.password} | {u.profile}</li>)}
         </ul>
         <button type="button" onClick={handleAddProject} >Add Projeto</button>
         </>

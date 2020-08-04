@@ -637,3 +637,102 @@ import backgroundImage from './assets/background.jpg';
 //function app ....
 <img width={200} src={backgroundImage} />
 ```
+
+
+# Consumir uma API REST com React
+
+Para consumir uma API com react precisamos instalar o **axios**, responsável por conectar o frontend com o backend: `yarn add axios`.
+
+Após instalar, criamos uma pasta *services* em *src*. Nessa pasta ficará todos os arquivos responsáveis pela conexão com arquivos externos.
+
+Dentro de *services* criamos o arquivo *api.js*.
+
+A estrutura do código ficará assim:
+
+```javascript
+import axios from 'axios';
+
+//criando instância axios
+const api = axios.create({
+    baseURL: 'http://localhost:3333'
+});
+
+export default api;
+```
+
+Podemos agora importar a API no arquivo *App.js*:
+
+```javascript
+import api from './services/api';
+```
+
+Agora, além do useState, usamos o useEffect, que dispara funções quando o componente for exibido em tela, então na função App definimos:
+
+```javascript
+useEffect(() => {}, []);
+```
+
+Onde o primeiro parâmetro será a função que será executada, e o segundo parâmetro quando será executada. O segundo parâmetro é conhecido como *array de dependência*. Incluimos as variáveis que usamos na função do primeiro parâmetro. Com o array vazio, significa que o useEffect irá ser usado assim que os componentes forem exibidos em tela.
+
+### Corrigindo erro de CORS
+
+Existe uma política de segurança no back end para que frontEnds que não sejam nossos não possam acessar a api. Para corrigir, precisamos corrigir o código no backEnd.
+
+**No BackEnd** Instalamos o cors `yarn add cors`
+
+Dentro do index.js, importamos o cors: `const cors = require('cors');`
+
+Então, após a linha *const app = express()* usamos `app.use(cors())`
+
+Estamos permitindo que qualquer frontEnd acesse a API. Para desenvolvimento podemos prosseguir, mais adiante precisaremos restringir apenas o nosso frontEnd nessa mesma linha de comando.
+
+Assim, no useEffect, podemos inserir nossa requisição dentro da arrow function:
+
+```javascript
+useEffect(() => {
+    api.get('/users').then(response => {
+        console.log(response)
+    })
+}, []);
+```
+
+Então, o código completo para capturar os usuários da API REST e exibí-los em tela é:
+
+```javascript
+import React, { useState, useEffect } from 'react';
+import api from './services/api';
+
+import './App.css';
+
+import Head from './components/Head';
+
+function App(){
+    const [users, setUsers] = useState([]);
+
+    //Par1 - Qual função disparar | Par2 - QUando disparar
+    useEffect(() => {
+        api.get('/users').then(response => {
+            setUsers(response.data);
+            console.log(response.data)
+        })
+    }, []);
+
+    function handleAddProject(){
+        setUsers([...users, `User ${Date.now()}`]);
+        console.log(users);
+    }
+    return(
+        <>
+        <Head title="HomeSana Projects"/>
+        <ul>
+            {users.map(u => <li key={u.id}>{u.login} | {u.password} | {u.profile}</li>)}
+        </ul>
+        <button type="button" onClick={handleAddProject} >Add Projeto</button>
+        </>
+    );
+}
+
+export default App;
+```
+
+
