@@ -4,7 +4,7 @@ NodeJS permite utilizar JavaScript no BackEnd
 
 É ele que gerencia as Rotas e Integrações.
 
-**NodeJS é uma plataforma e não uma linguagem. Foi construído em cima da V8 (Engine que interpreta o JavaScript). Podemos comparar o NodeJS como PhP, Ruby ou qualquer outra linguagem que se aplique ao Back End**
+**NodeJS é uma plataforma e não uma linguagem. Foi construído em cima da V8 (Engine que interpreta o JavaScript). Podemos comparar o NodeJS como PhP, Ruby ou qualquer outra linguagem que se aplique ao Back End.**
 
 ### NodeJS, NPM e YARN
 
@@ -163,7 +163,7 @@ Até agora usamos o método GET com Express, mais precisamente:
 - PUT/PATCH: Altera informação no BackEnd (PUT é usado normalmente para alterar todo o objeto, PATCH é para alguma informação específica (como alteração de imagem por exemplo)
 - DELETE: Deleta uma informação no BackEnd
 
-**Normalmente chamamos o path ou rota que vem depois da barra ('/') de *resource* ou *recurso***
+**Normalmente chamamos o path ou rota que vem depois da barra ('/') de *resource* ou *recurso*.**
 
 Para urls que precisam de parâmetros usamos os *:* (dois pontos):
 
@@ -218,7 +218,7 @@ Antes de mais nada, para tratar cada objeto como único, precisamos de uma chave
 yarn add uuidv4
 ```
 
-**O código responsável por esse tópico estará no arquivo src/index no corpo do commit**
+**O código responsável por esse tópico estará no arquivo src/index no corpo do commit.**
 
 ## Middleware
 
@@ -251,7 +251,7 @@ app.use(logRequests);
 
 Porém, como é um interceptador, ele interrompeu totalmente a requisição e precisa ser informado que é para prosseguir para a próxima função, para isso, usamos o parâmetro declarado *next*. Caso não seja chamado, a rota não será disparada.
 
-**OBS: NodeJS é uma aplicação linear, então a função que ele encontrar primeiro será executada, portanto, as funções a serem executadas primeiro precisam ser declaradas antes**
+**OBS: NodeJS é uma aplicação linear, então a função que ele encontrar primeiro será executada, portanto, as funções a serem executadas primeiro precisam ser declaradas antes.**
 
 Para usar um ou mais middlewares em uma rota específica, incluímos antes da arrow function com o request e response:
 
@@ -316,7 +316,7 @@ FrontEnd não tem responsabilidade em regra de negócio.
 
 - Uma API para múltiplos clientes:
 
-**Com apenas uma API podemos estruturar com o frontEnd uma aplicação Mobile e Web. Dois clientes com a mesma API**
+**Com apenas uma API podemos estruturar com o frontEnd uma aplicação Mobile e Web. Dois clientes com a mesma API.**
 
 - Programação declarativa
 
@@ -331,7 +331,7 @@ JavaScript + XML no mesmo arquivo. E com o React criamos nossas próprias tags e
 
 - **O browser não entende o código, pois as 3 linguagens juntas o bowser não é preparado**
 - **O Babel converte o código JS em um arquivo legível ao browser**
-- **Live Reaload com Webpack Dev Server. Independente da quantidade de arquivos, o Webpack cria um único arquivo dos arquivos que o Babel criou**
+- **Live Reaload com Webpack Dev Server. Independente da quantidade de arquivos, o Webpack cria um único arquivo dos arquivos que o Babel criou.**
 
 ---
 
@@ -495,7 +495,7 @@ Qualquer informação passada de um componente pai para componente filho.
 
 Ex: Um Header com títulos diferentes.
 
-- Criamos um componente *Head* em *Components/Head.js* e ele renderiza um <h2> com um valor personalizado.
+- Criamos um componente *Head* em *Components/Head.js* e ele renderiza um H2 com um valor personalizado.
 - Passamos um atributo na *TAG* do Head (Ex: <Head title="HomeSana" />)
 - No componente *HEAD* inserimos o parâmetro *props* na função (ele é quem irá receber as propriedades e tornar possível usá-las). É possível fazer desestruturação também.
 - Para usar a propriedade passada no HTML, usamos as chaves **{}** para inserir javascript no html.
@@ -510,3 +510,82 @@ Também é possível inserir HTML dentro das tags personalizadas, Ex:
 </Head>
 ```
 Para capturar o corpo da tag, **dentro do parâmetro props contém o parâmetro *children*, que pode ser acessado de dentro do component**.
+
+## Estado e Imutabilidade
+
+Usado para garantir performance com aplicações com muitos dados.
+
+Suponha que você tenha um array *projects* e queira exibir na página, usamos:
+
+```javascript
+function App(){
+    const projects = ['DoneList', 'SteamStoreBR'];
+    return(
+        <>
+        <Head title="HomeSana"/>
+        <ul>
+            {projects.map(project => <li key={project}>{project}</li>)}
+        </ul>
+        </>
+    );
+}
+export default App;
+```
+
+Mapeamos cada elemento para a tag *li* que criamos dentro da tag *ul*. Funciona perfeitamente. Usamos o parâmetro **key** como ID para o React, que é a chave de registro único de cada elemento toda vez que temos um laço de repetição gerando código HTML.
+
+Porém, caso você tenha um botão *Add Projeto*, para adicionar um projeto ao array, precisamos de uma função que insira o dado. Como estamos usando React, a declaração da função na tag button é bem simples, confira:
+
+```javascript
+function App(){
+    const projects = ['DoneList', 'SteamStoreBR'];
+    function handleAddProject(){
+        projects.push(`Projeto ${Date.now()}`);
+        console.log(projects);
+    }
+    return(
+        <>
+        <Head title="HomeSana"/>
+        <ul>
+            {projects.map(project => <li key={project}>{project}</li>)}
+        </ul>
+        <button type="button" onClick={handleAddProject} >Add Projeto</button>
+        </>
+    );
+}
+export default App;
+```
+
+Dessa forma, com o *console.log(projects)* garantimos que o elemento está sendo adicionado, porém, não é atualizado na página. Para fazer a mudança em tempo real, usamos o conceito de **estado**.
+
+### Como usar o estado e Imutabilidade:
+
+Agora, após importar o React na primeira linha, importamos por desestruturação o *useState* (Prefixo 'use' diz respeito a uma api que o React implementou onde conseguimos criar estados, antigamente eram classes). `import React, { useState } from 'react';`
+
+Agora precisamos transformar o array *projects* em um estado, declarando o array com a função *useState*:
+
+```javascript
+const projects = useState(['DoneList', 'SteamStoreBR']);
+```
+
+A função useState retorna um array com dois elementos:
+
+1. Variável com o valor inicial (Retorna o próprio array passado)
+2. Função para atualizar o valor
+
+Então, para otimizar o trabalho, desestruturamos o seu retorno:
+
+```javascript
+const [projects, setProjects] = useState(['DoneList', 'SteamStoreBR']);
+```
+
+E para atualizar na página HTML, usamos a função *setProjects* por meio da **imutabilidade**.
+
+**Imutabilidade - Não é possível alterar o formato da variável (alterar, excluir) de maneira direta, ou seja, o que precisamos fazer é recriar a variável com todos os seus elementos. O método push() não respeita a imutabilidade, pois altera o valor original do array. Sempre que um método altera o valor original de um objeto, no react ele deve ser evitado. Nós sempre criamos um novo array.**
+
+Então, para recriar o projeto passamos o novo array com o *spread operator*:
+
+```javascript
+setProjects([...projects, `Projeto ${Date.now()}`]);
+```
+**A variável projects não é alterada, é feita a recriação do array, com os valores que já estão nele e o novo elemento.**
